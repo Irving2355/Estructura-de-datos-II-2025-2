@@ -25,9 +25,30 @@ class Pila{
             else
                 tope--;
         }
+
+        void mostrar(){
+            for(int i=tope; i>=0; --i){
+                cout << datos[i] << " ";
+            }
+        }
 };
 
 int main(){
+    Pila pila;
+
+    pila.push(1);
+    pila.push(2);
+    pila.push(3);
+    pila.push(4);
+    pila.push(5);
+    pila.mostrar();
+    pila.pop();
+    cout << endl;
+    pila.mostrar();
+    pila.push(6);
+    pila.push(7);
+    cout << endl;
+    pila.mostrar();
 
     return 0;
 }
