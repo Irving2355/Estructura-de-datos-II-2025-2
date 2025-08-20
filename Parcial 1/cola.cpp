@@ -26,9 +26,46 @@ class Cola{
             }else{
                 ++frente;
             }
+        } 
+
+        int front(){
+            if(isEmpty()){
+                cout << "Cola vacia" << endl;
+                return -1;
+            }
+            return datos[frente];
+        }
+
+        int size(){
+            if(isEmpty()){
+                cout << "Cola vacia" << endl;
+                return -1;
+            }
+            return fin - frente + 1;
+        }
+
+        void clear(){
+            frente = 0;
+            fin = -1;
+        }
+
+        void mostrar(){
+            if(isEmpty()){
+                cout << "Cola vacia" << endl;
+            }
+            for(int i=frente; i<= fin; ++i){
+                cout << datos[i] << " ";
+            }
         }
 };
 
 int main(){
+    Cola cola;
+    cola.enqueue(1);
+    cola.enqueue(2);
+    cola.dequeue();
+    int x = cola.size();
+    cout << x << endl;
+    cola.mostrar();
     return 0;
 }
