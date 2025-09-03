@@ -57,9 +57,48 @@ public:
         }
         return hmax + 1;
     }
+
+    //calcular el grado maximo en todo el subarbol
+    int gradoMaximo()const{
+        int g = nHijos;
+        for(int i=0; i<nHijos; ++i){
+            g = max(g, hijos[i]->gradoMaximo());
+        }
+        return g;
+    }
 };
 
 int main(){
+    Empleado* CEO = new Empleado("CEO");
+    Empleado* CTO = new Empleado("CTO");
+    Empleado* CFO = new Empleado("CFO");
+    Empleado* COO = new Empleado("COO");
+
+    CEO->agregarSubordinado(CTO);
+    CEO->agregarSubordinado(CFO);
+    CEO->agregarSubordinado(COO);
+
+    Empleado* DevLead = new Empleado("Lider Dev");
+    CTO->agregarSubordinado(DevLead);
+    DevLead->agregarSubordinado(new Empleado("Dev1"));
+    DevLead->agregarSubordinado(new Empleado("Dev2"));
+
+    CFO->agregarSubordinado(new Empleado("Finanzas1"));
+
+    COO->agregarSubordinado(new Empleado("Ops1"));
+    COO->agregarSubordinado(new Empleado("Ops2"));
+
+    //Resultados
+    cout << "***** Preorden *****"<<endl;
+    CEO->imprimirPreorden();
+
+    cout << "\nTotal empleados: " << CEO->contarEmpleados() << endl;
+
+    cout << "\nAltura: " << CEO->altura() << endl;
+
+    cout << "\nGrado maximo: " << CEO->gradoMaximo() << endl;
+
+    delete CEO; //libera todo
 
     return 0;
 }
