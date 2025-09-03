@@ -39,6 +39,24 @@ public:
             hijos[i]->imprimirPreorden(nivel + 1);
         }
     }
+
+    //contar total de empleados en el subarbol
+    int contarEmpleados()const{
+        int total = 1;
+        for(int i=0; i<nHijos; ++i){
+            total += hijos[i]->contarEmpleados();
+        }
+        return total;
+    }
+
+    //calcular la altura
+    int altura()const{
+        int hmax = -1;
+        for(int i=0; i<nHijos; ++i){
+            hmax = max(hmax,hijos[i]->altura());
+        }
+        return hmax + 1;
+    }
 };
 
 int main(){
