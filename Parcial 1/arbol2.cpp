@@ -99,7 +99,20 @@ int main(){
     user->agregar(docs);
     user->agregar(img);
 
-    cout << "Postorden\n";
+    docs->agregar(tareaPdf);
+    docs->agregar(notasTxt);
+    img->agregar(fotoPng);
+
+    etc->agregar(conf);
+
+    cout << "Rutas\n";
+    root->listarRutas();
+
+    cout << "\nTamano total " << root->tamanoTotal();
+
+    cout << "\n\nPostorden\n";
     root->imprimirPostorden();
+
+    delete root;
     return 0;
 }
