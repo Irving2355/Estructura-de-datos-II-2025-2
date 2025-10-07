@@ -85,10 +85,33 @@ private:
         top.replace(topPos,rootW,root);
 
         //conectores hacia L y R 
-        
+        string connectors(width, ' ');
+        if (L) connectors[L->rootMid] = '/';
+        if (R) connectors[lw+gap+R->rootMid] = '\\';
+
         //Cuerpo coser verticalmente L y R
+        int h = max(lh,rh);
+        vector<string> body;
+        body.reserve(h);
 
+        for(int i=0; i<h; ++i){
+            string leftPart = (L && i < L->height)? L->lines[i]: string(lw, ' ');
+            string rightPart = (R && i < R->height)? R->lines[i]: string(rw, ' ');
+            body.emplace_back(leftPart + string(gap, ' ') + rightPart);
+        }
 
+        box b;
+        b.lines.reserve(2 + h);
+        b.lines.push_back(top);
+        b.lines.push_back(connectors);
+
+        for(auto& row: body) b.lines.push_back(std::move(row));
+
+        b.width = width;
+        b.height = (int)b.lines.size();
+        b.rootMid = topPos + rootW/2;
+        
+        return b;
     }
 
     static box render(Nodo* n){
@@ -105,6 +128,16 @@ private:
         box right = render(n->der);
         return glue(n->izq? &left: nullptr, label(n), n->der? &right: nullptr );
 
+    }
+
+    Nodo* insertarRec(Nodo* n,int k){
+        if(!n) return new Nodo(k);
+        
+        if(k < n->key) n->izq = insertarRec(n->izq,k);
+        else if(k > n->key) n->der = insertarRec(n->der,k);
+        else return n;
+
+        actualizarAltura(n);
     }
 
 };
