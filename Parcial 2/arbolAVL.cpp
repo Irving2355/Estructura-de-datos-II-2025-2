@@ -42,6 +42,55 @@ private:
     Nodo* raiz;
     bool verbose;
 
+    static int altura(Nodo* n){ return n? n->h : 0;}
+
+    static int balance(Nodo* n){
+        return n? altura(n->izq) - altura(n->der) : 0;
+    }
+
+    static void actualizarAltura(Nodo* n){
+        if(!n) return;
+        n->h = 1 + max(altura(n->izq), altura(n->der));
+    }
+
+    static string label(Nodo* n){
+        if(!n) return string(); //""
+        return "[" + to_string(n->key) + "]";
+    }
+
+    static box renderLeaf(Nodo* n){
+        box b;
+        b.lines = {label(n)};
+        b.width = (int)b.lines[0].size();
+        b.height = 1;
+        b.rootMid = b.width / 2;
+        return b;
+    }
+
+    static box glue(const box* L, const string& root,const box* R ){
+        const int gapMin = 2;
+        const int lw = L ? L->width : 0;
+        const int rw = R ? R->width : 0;
+        const int lh = L ? L->height : 0;
+        const int rh = R ? R->height : 0;
+
+        int rootW = (int)root.size();
+        int gap = max(gapMin, rootW);
+        int width = lw + gap + rw;
+
+        //etiqueta de la raiz centrada
+        string top(width, ' ');
+        int topPos = lw + gap/2 - rootW/2;
+        topPos = max(0,min(width - rootW,topPos));
+        top.replace(topPos,rootW,root);
+
+        //conectores hacia L y R 
+        
+        //Cuerpo coser verticalmente L y R
+
+
+    }
+
     static box render(Nodo* n){
         if(!n){
             box b;
