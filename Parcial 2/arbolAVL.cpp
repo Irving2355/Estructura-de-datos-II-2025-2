@@ -11,7 +11,9 @@ struct Nodo {
     int h; //altura de nodo
     Nodo* izq;
     Nodo* der;
-};
+
+    explicit Nodo(int k) : key(k),h(1),izq(nullptr),der(nullptr){}
+}; 
 
 class AVL{
 public:
@@ -21,7 +23,7 @@ public:
 
     void insertar(int k){
         raiz = insertarRec(raiz,k);
-        imprimirBonito();
+        //imprimirBonito();
     }
 
     void imprimirBonito(){
@@ -123,7 +125,7 @@ private:
             b.rootMid = 0;
             return b;
         }
-        if(!n->izq && !n->der) renderLeaf(n);
+        if(!n->izq && !n->der) return renderLeaf(n);
         box left = render(n->izq);
         box right = render(n->der);
         return glue(n->izq? &left: nullptr, label(n), n->der? &right: nullptr );
@@ -138,10 +140,16 @@ private:
         else return n;
 
         actualizarAltura(n);
+
+        return n;
     }
 
 };
 
 int main(){
+    AVL avl;
+
+    for(int v : {42,17,88,5,23,60,91,3,12,27}) avl.insertar(v);
+    avl.imprimirBonito();
     return 0;
 }
