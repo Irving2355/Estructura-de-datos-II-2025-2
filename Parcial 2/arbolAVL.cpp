@@ -26,7 +26,7 @@ public:
         //imprimirBonito();
     }
 
-    void imprimirBonito(){
+    void imprimirBonito()const{
         auto box = render(raiz);
         for(const auto& line : box.lines) cout << line << '\n';
     }
@@ -141,15 +141,69 @@ private:
 
         actualizarAltura(n);
 
+        //ver si hay desbalance
+        int bf = balance(n);
+
+        //decidimos el tipo de correccion
+        if(bf > 1 && k < n->izq->key)
+            return rotacionDerecha(n);
+
+        if(bf < -1 && k > n->der->key)
+            return rotacionIzquierda(n);
+        
+        if(bf > 1 && k > n->izq->key){
+            n->izq = rotacionIzquierda(n->izq);
+            return rotacionDerecha(n);
+        }
+
+        if(bf < -1 && k < n->der->key){
+            n->der = rotacionDerecha(n->der);
+            return rotacionIzquierda(n);
+        }
+
         return n;
     }
+
+    Nodo* rotacionDerecha(Nodo* y){
+        //y es el nodo desbalanceado
+        Nodo* x = y->izq;
+        Nodo* T2 = x->der; //subarbol que cambia
+
+        //rotacion
+        x->der = y;
+        y->izq = T2;
+
+        //calcular alturas
+        actualizarAltura(y);
+        actualizarAltura(x);
+
+        return x; //nueva raiz
+    }
+
+    Nodo* rotacionIzquierda(Nodo* x){
+        //y es el nodo desbalanceado
+        Nodo* y = x->der;
+        Nodo* T2 = y->izq; //subarbol que cambia
+
+        //rotacion
+        y->izq = x;
+        x->der = T2;
+
+        //calcular alturas
+        actualizarAltura(x);
+        actualizarAltura(y);
+
+        return y; //nueva raiz
+    }
+
 
 };
 
 int main(){
     AVL avl;
 
-    for(int v : {42,17,88,5,23,60,91,3,12,27}) avl.insertar(v);
+    for(int v : {30,10,20}) avl.insertar(v);
+    cout << "\n************************\n";
     avl.imprimirBonito();
     return 0;
 }
