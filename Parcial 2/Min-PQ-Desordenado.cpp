@@ -66,9 +66,56 @@ public:
         return ans;
     }
 
+    /*decraseKeyById buscamos por id si lo hallamos y newKey
+    es menor o igual actualizamos 
+    no hay que reubicar fisicamente*/
+    bool decraseKeyById(int id, int newKey){
+        for(int i=0; i<n; i++){
+            if(a[i].id == id){
+                if(newKey <= a[i].key){
+                    a[i].key = newKey;
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 
+    /*merge conectamos los elementos de otra PQ*/
+    bool merge(const UnorderMinPQ& other){
+        if(n + other.n > CAP) return false;
+        for(int i=0; i < other.n; ++i){
+            a[n++] = other.a[i];
+        }
+        return true;
+    }
+
+    void print() const{
+        cout << "[";
+        for(int i=0; i<n; ++i){
+            cout << "(" << a[i].id << "," << a[i].key << ")";
+            if(i+1<n) cout << ", ";
+        }
+        cout << "]\n";
+    }
 };
 
 int main(){
+    UnorderMinPQ pq;
+    pq.insert(1,5);pq.insert(2,2);pq.insert(3,9);pq.insert(4,2);pq.insert(5,7);
+    cout << "tras inserciones: "; pq.print();
+
+    Item m = pq.findMin();
+    cout << "findMin -> (id= " << m.id << ", key= " << m.key <<")\n";
+
+    Item e = pq.extractMin();
+    cout << "extractMin -> (id= " << e.id << ", key= " << e.key <<")\n";
+
+    cout << "estado final: "; pq.print();
+
+    pq.decraseKeyById(5,1);
+    cout << "tras decraseKeyById (id=5,1) ";pq.print();
     return 0;
 }
