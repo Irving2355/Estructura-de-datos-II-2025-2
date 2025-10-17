@@ -53,8 +53,49 @@ public:
         return true;
     }
 
+    //findMin el minimo logico esta en head
+    Item2 findMin() const {
+        if(isEmpty()) return Item2{-1,0};
+        return a[head];
+    }
+
+    Item2 extraxtMin(){
+        if(isEmpty()) return Item2{-1,0};
+        Item2 ans = a[head++];
+        //si head crecio mucho compactar
+        if(head > 256 && head > (n/2)){
+            const_cast<OrderMinPQ*>(this)->compact();
+        }
+        return ans;
+    }
+
+    void print()const{
+        cout << "[";
+        for(int i=head; i<n; ++i){
+            cout << "(" << a[i].id << "," << a[i].key << ")";
+            if(i+1<n) cout << ", ";
+        }
+        cout << "]\n";
+    }
 };
 
 int main(){
+    OrderMinPQ pq;
+    pq.insert(1,5);
+    pq.insert(4,2);
+    pq.insert(3,9);
+    pq.insert(2,2);
+    pq.insert(5,7);
+
+    cout << "tras inserciones: "; pq.print();
+
+    Item2 m = pq.findMin();
+    cout << "findMin -> (id= " << m.id << ", key= " << m.key <<")\n";
+
+    Item2 e = pq.extraxtMin();
+    cout << "extractMin -> (id= " << e.id << ", key= " << e.key <<")\n";
+
+    cout << "estado final: "; pq.print();
+
     return 0;
 }
