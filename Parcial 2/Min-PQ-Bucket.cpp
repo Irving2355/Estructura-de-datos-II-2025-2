@@ -15,6 +15,7 @@ struct Queue
 
     bool empty() const { return cnt == 0;}
     bool full() const {return cnt == CAP;}
+    int size() const { return cnt;}
 
     //push encola al final tail
     bool push(int _id, int _key){
@@ -53,6 +54,46 @@ struct Queue
         }
         cout << "]";
     }
+
+    /*findIdOffset busca id y devuelve su offset logico (o ... cnt-1) contando desde head
+    sirve para ubicar rapidamente en elemnto dentro del bucket*/
+    int findIdOffset(int targetId) const{
+        for(int i=0; i<cnt; ++i){
+            int pos = (head + i) % CAP;
+            if(id[pos] == targetId) return i;
+        }
+        return -1; // no se encontro
+    }
+
+    /*ereaseOffset elimina el elemento ubicado en el offset*/
+    bool ereaseOffset(int off, int& outId, int& outKey){
+        if(off < 0 || off >= cnt) return false;
+        int newCnt = 0;
+        bool removed = false;
+
+        /*Recoremos toda la cola desde head copiando a la
+        nueva ubicacion logica excepto el elemento a borrar*/
+        for(int i=0; i<cnt; ++i){
+            int pos = (head + i) % CAP;
+            if(i == off){
+                //guardamos el que borramos para devolver
+                outId = id[pos];
+                outKey = key[pos];
+                removed = true;
+            }else{
+                //compactar logicamente 
+                id[(head + newCnt) % CAP] = id[pos];
+                key[(head + newCnt) % CAP] = key[pos];
+                ++newCnt;
+            }
+        }
+
+        tail = (head + newCnt) % CAP;
+        cnt = newCnt;
+        return removed;
+    }
+
+    bool enqueueBack(int _id, int _key){ return push(_id,_key);}
 };
 
 class BucketMinPQ{
@@ -112,6 +153,56 @@ public:
                 cout << "\n";
             }
         }
+    }
+
+    void clear(){
+        for(int k=0; k<BK; ++k){
+            B[k] = Queue{};
+        }
+        minPtr = BK;
+        total = 0;
+    }
+
+    /*peekMin inspecciona el minimo sin extraer*/
+    bool peekMin(int& id, int& key){
+        if(isEmpty()) return false;
+        if(minPtr >= BK) advanceMinPtr();
+        if(minPtr >= BK) return false;
+
+        if(B[minPtr].empty()){
+            advanceMinPtr();
+            if(minPtr >= BK) return false;
+        }
+
+        return B[minPtr].front(id,key);
+    }
+
+    bool decreaseKeyById(int targetId ,int newKey){
+        if(newKey < 0 || newKey > K) return false;
+
+        int foundBucket = -1, off = -1;
+        for(int k=0; k<BK; ++k){
+            off = B[k].findIdOffset(targetId);
+
+            if(off >= 0) {foundBucket = k; break;}
+        }
+        if(foundBucket < 0) return false;
+
+        int oldId, oldKey;
+        if(!B[foundBucket].ereaseOffset(off,oldId,oldKey)) return false;
+
+        if(newKey > oldKey){
+            B[foundBucket].enqueueBack(oldId,oldKey);
+            return false;
+        }
+
+        if(!B[newKey].enqueueBack(oldId,newKey)){
+            B[foundBucket].enqueueBack(oldId,oldKey);
+            return false;
+        }
+
+        if(minPtr >= BK || newKey < minPtr) minPtr = newKey;
+        return true;
     }
 };
 
