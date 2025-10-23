@@ -223,6 +223,24 @@ int main(){
     cout << "Estado inicial \n";
     pq.printState();
 
-    //pq.extactMin()
+    int id,key;
+    if(pq.peekMin(id,key)){
+        cout << "peekMin-> (id= " << id << " ,key= " << key <<")\n";
+    }
+
+    //tres extraciones
+    for(int t=1; t<=3; ++t){
+        bool ok = pq.extactMin(id,key);
+        cout << t << " extactMin-> (id= " << (ok? to_string(id): "N/A") << " ,key= " << (ok? to_string(key): "N/A") <<")\n";
+
+        cout << "Estado iterado "<< t << "\n";
+        pq.printState();
+        cout << endl;
+    }
+
+    cout << "\n decreaseKey (16,1) == \n";
+    pq.decreaseKeyById(16,1);
+    pq.printState();
+    
     return 0;
 }
