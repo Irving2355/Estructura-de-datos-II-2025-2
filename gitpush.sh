@@ -10,4 +10,4 @@ git commit -m "Clase $fecha"
 git push -u origin main
 
 # Mensaje de confirmación
-echo "✅ Cambios subidos correctamente con commit: Clase $fecha"
+echo "Cambios subidos correctamente con commit: Clase $fecha"
